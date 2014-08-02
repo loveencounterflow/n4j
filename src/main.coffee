@@ -8,10 +8,10 @@
 #...........................................................................................................
 # BAP                       = require 'coffeenode-bitsnpieces'
 TYPES                     = require 'coffeenode-types'
-TEXT                      = require 'coffeenode-text'
+# TEXT                      = require 'coffeenode-text'
 TRM                       = require 'coffeenode-trm'
 rpr                       = TRM.rpr.bind TRM
-badge                     = 'graphical-timetable/feed-neo4j'
+badge                     = 'n4j'
 log                       = TRM.get_logger 'plain',     badge
 info                      = TRM.get_logger 'info',      badge
 whisper                   = TRM.get_logger 'whisper',   badge
@@ -23,18 +23,11 @@ urge                      = TRM.get_logger 'urge',      badge
 echo                      = TRM.echo.bind TRM
 rainbow                   = TRM.rainbow.bind TRM
 #...........................................................................................................
-### https://github.com/brendannee/node-gtfs
-  http://www.gtfs-data-exchange.com/
-  ###
-# GTFS                      = require 'gtfs'
-# MDB                       = require 'mongodb'
 ASYNC                     = require 'async'
-#...........................................................................................................
-TIMETABLE                 = require './main'
-MOMENT                    = require 'moment'
 mk_request                = require 'request'
+#...........................................................................................................
+### TAINT should use proper options ###
 db_route                  = 'http://localhost:7474/db/data/cypher'
-
 
 
 #-----------------------------------------------------------------------------------------------------------
@@ -139,3 +132,27 @@ db_route                  = 'http://localhost:7474/db/data/cypher'
   #.........................................................................................................
   return null
 
+
+
+#-----------------------------------------------------------------------------------------------------------
+@_escape = ( x ) ->
+  return switch type = TYPES.type_of x
+    when 'pod'      then @_escape_pod  x
+    when 'node'     then @_escape_node x
+    else JSON.stringify x
+    # else throw new Error "unable to escape value of type #{rpr type}"
+
+#-----------------------------------------------------------------------------------------------------------
+@_escape_name = ( x ) ->
+  return '`' + ( x.replace /`/g, '``' ) + '`'
+
+#-----------------------------------------------------------------------------------------------------------
+@_escape_pod = ( x ) ->
+  R = ( ( @_escape_name name ) + ': ' + @_escape value for name, value of x )
+  return "{ #{R.join ', '} }"
+
+#-----------------------------------------------------------------------------------------------------------
+@_escape_node = ( x ) ->
+  label = @_escape_name x[ '~label' ] ? 'nolabel'
+  data  = @_escape_pod  x
+  return "(:#{label} #{data})"
