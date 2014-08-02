@@ -1,0 +1,27 @@
+{
+  "name": "n4j",
+  "version": "0.1.0",
+  "description": "NodeJS library for working with the Neo4J graph database engine.",
+  "main": "lib/main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/loveencounterflow/n4j.git"
+  },
+  "keywords": [
+    "neo4j",
+    "graph",
+    "database"
+  ],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/loveencounterflow/n4j/issues"
+  },
+  "homepage": "https://github.com/loveencounterflow/n4j",
+  "devDependencies": {
+    "coffee-script": "^1.7.1"
+  }
+}
